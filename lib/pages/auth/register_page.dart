@@ -1,4 +1,7 @@
+import 'package:chatapp_firebase/helper/helper_function.dart';
 import 'package:chatapp_firebase/pages/auth/login_page.dart';
+import 'package:chatapp_firebase/pages/homepage.dart';
+import 'package:chatapp_firebase/service/auth_service.dart';
 import 'package:chatapp_firebase/shared/constant.dart';
 import 'package:chatapp_firebase/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
@@ -16,10 +19,14 @@ class _RegisterPageState extends State<RegisterPage> {
   String email = "";
   String password = "";
   String fullName = "";
+  bool _isLoading = false;
+  AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: (_isLoading == true)?
+      Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor,)):
+      SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
           child: Form(
@@ -119,7 +126,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(30)
                     )
                   ),
-                  onPressed: (){}, 
+                  onPressed: (){
+                    register();
+                  }, 
                   child: const Text("Register")
                 ),
               ),
@@ -150,5 +159,27 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  register() async{
+    if(formKey.currentState!.validate()){
+      setState(() {
+        _isLoading = true;
+      });
+      await authService.registerWithEmailAndPassword(fullName, email, password).then((value)async{
+
+        if(value == true){
+          await HelperFunction.saveUserLoggedInStatus(true);
+          await HelperFunction.saveUSerEmailSF(email);
+          await HelperFunction.saveUserNameSF(fullName);
+          nextScreen(context, const HomePage());
+        }else{
+          showSnackBar(context, Colors.red, value);
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      });
+    }
   }
 }
