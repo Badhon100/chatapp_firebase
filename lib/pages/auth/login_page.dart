@@ -1,5 +1,7 @@
+import 'package:chatapp_firebase/pages/auth/register_page.dart';
 import 'package:chatapp_firebase/shared/constant.dart';
 import 'package:chatapp_firebase/widgets/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -87,7 +89,43 @@ class _LoginPageState extends State<LoginPage> {
                   });
                 },
               ),
-              
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)
+                    )
+                  ),
+                  onPressed: (){}, 
+                  child: const Text("Sign in")
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text.rich(
+                TextSpan(
+                  text: "Don't have an account? ",
+                  style: const TextStyle(color: Colors.black, fontSize: 14),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "Register here",
+                      style: const TextStyle(
+                        color: Colors.black,
+                        decoration: TextDecoration.underline
+                      ),
+                      recognizer: TapGestureRecognizer()..onTap = (){
+                        nextScreen(context, const RegisterPage());
+                      }
+                    )
+                  ]
+                )
+              )
               ],
             ),
           ),
