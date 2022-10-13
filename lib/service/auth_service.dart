@@ -1,3 +1,4 @@
+import 'package:chatapp_firebase/helper/helper_function.dart';
 import 'package:chatapp_firebase/service/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,6 +16,22 @@ class AuthService {
       }
     }on FirebaseAuthException catch (e){
       return e.message;
+    }
+  }
+
+
+
+  //signout
+
+  Future signout()async{
+    try{
+      await HelperFunction.saveUserLoggedInStatus(false);
+      await HelperFunction.saveUSerEmailSF("");
+      await HelperFunction.saveUserNameSF("");
+      await firebaseAuth.signOut();
+
+    }catch (e){
+      return null;
     }
   }
 }
