@@ -3,8 +3,11 @@ import 'package:chatapp_firebase/pages/auth/login_page.dart';
 import 'package:chatapp_firebase/pages/profile_page.dart';
 import 'package:chatapp_firebase/pages/search_page.dart';
 import 'package:chatapp_firebase/service/auth_service.dart';
+import 'package:chatapp_firebase/service/database_service.dart';
 import 'package:chatapp_firebase/shared/constant.dart';
 import 'package:chatapp_firebase/widgets/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   AuthService authService = AuthService();
   String userName = "";
   String email = "";
+  Stream? groups;
 
   @override
   void initState() {
@@ -36,6 +40,13 @@ class _HomePageState extends State<HomePage> {
     await HelperFunction.getUserNameFromSF().then((value){
       setState(() {
         userName = value!;
+      });
+    });
+
+    //getting user list of groups
+    await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid).getUserGroups().then((snapshot){
+      setState(() {
+        groups = snapshot;
       });
     });
   }
@@ -104,6 +115,59 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      body: groupList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          popUpDialog(context);
+        },
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(
+          Icons.add,
+          size: 30,
+          color: Colors.white,
+        ),
+      ),
     );
+  }
+  groupList(){
+    return StreamBuilder(
+      stream: groups,
+      builder:  (context, AsyncSnapshot snapshot) {
+        if(snapshot.hasData){
+          if(snapshot.data['groups'] != null){
+            if(snapshot.data['groups'].length != 0){
+              return const Text("data");
+            }else{
+              return noGroupWidget();
+            }
+          }else{
+            return noGroupWidget();
+          }
+        }else{
+          return Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor,),);
+        }
+      }
+    );
+  }
+
+
+  noGroupWidget(){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.add_circle, color:  Colors.grey[700], size: 75,),
+          const Text("You have not joined any groups, add or create a new group")
+        ],
+      ),
+    );
+  }
+
+
+  //pop up dialog to add new group
+  popUpDialog(BuildContext context){
+
   }
 }
