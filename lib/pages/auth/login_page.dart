@@ -1,6 +1,12 @@
+import 'package:chatapp_firebase/helper/helper_function.dart';
 import 'package:chatapp_firebase/pages/auth/register_page.dart';
+import 'package:chatapp_firebase/pages/homepage.dart';
+import 'package:chatapp_firebase/service/auth_service.dart';
+import 'package:chatapp_firebase/service/database_service.dart';
 import 'package:chatapp_firebase/shared/constant.dart';
 import 'package:chatapp_firebase/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -15,10 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
+
+  bool _isLoading = false;
+  AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: (_isLoading == true)?
+      Center(
+        child: CircularProgressIndicator(color: Theme.of(context).primaryColor,),
+      ):
+      SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
           child: Form(
@@ -99,7 +112,9 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(30)
                     )
                   ),
-                  onPressed: (){}, 
+                  onPressed: (){
+                    login();
+                  }, 
                   child: const Text("Sign in")
                 ),
               ),
@@ -130,5 +145,28 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  login()async{
+    if(formKey.currentState!.validate()){
+      setState(() {
+        _isLoading = true;
+      });
+      await authService.loginWithEmailAndPAssword(email, password).then((value)async{
+
+        if(value == true){
+          QuerySnapshot snapshot = await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserData(email);
+          await HelperFunction.saveUserLoggedInStatus(true);
+          await HelperFunction.saveUSerEmailSF(email);
+          await HelperFunction.saveUserNameSF(snapshot.docs[0]['fullName']);
+          nextScreen(context, const HomePage());
+        }else{
+          showSnackBar(context, Colors.red, value);
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      });
+    }
   }
 }
