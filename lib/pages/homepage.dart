@@ -1,3 +1,4 @@
+
 import 'package:chatapp_firebase/helper/helper_function.dart';
 import 'package:chatapp_firebase/pages/auth/login_page.dart';
 import 'package:chatapp_firebase/pages/profile_page.dart';
@@ -7,7 +8,6 @@ import 'package:chatapp_firebase/service/database_service.dart';
 import 'package:chatapp_firebase/shared/constant.dart';
 import 'package:chatapp_firebase/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   String userName = "";
   String email = "";
   Stream? groups;
+  bool _isLoading = false;
+  String groupName = "";
 
   @override
   void initState() {
@@ -168,6 +170,84 @@ class _HomePageState extends State<HomePage> {
 
   //pop up dialog to add new group
   popUpDialog(BuildContext context){
+    showDialog(
+      barrierDismissible: false,
+      context: context, 
+      builder: (context){
+        return AlertDialog(
+          title: const Text(
+          "Create a new group",
+            textAlign: TextAlign.left,
 
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _isLoading == true ? Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor),) 
+              : TextField(
+                onChanged: ((value) {
+                  setState(() {
+                    groupName = value;
+                  });
+                }),
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColor
+                    ),
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.red
+                    ),
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColor
+                    ),
+                    borderRadius: BorderRadius.circular(20)
+                  )
+                ),
+                
+              )
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor
+              ), 
+              child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+              onPressed: ()async{
+                if(groupName.isNotEmpty){
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid).
+                  createGroup(
+                    userName,
+                    FirebaseAuth.instance.currentUser!.uid,
+                    groupName
+                  );
+                  Navigator.of(context).pop();
+                  showSnackBar(context, Colors.green, "Group created successfully");
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor
+              ), 
+              child: const Text("Create"),
+              )
+          ],
+        );
+      }
+    );
   }
 }
