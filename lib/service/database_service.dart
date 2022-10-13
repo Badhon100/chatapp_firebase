@@ -117,7 +117,7 @@ class DatabaseService{
       });
 
       await groupDocumentReference.update({
-        "groups": FieldValue.arrayRemove(["${uid}_$userName"])
+        "members": FieldValue.arrayRemove(["${uid}_$userName"])
       });
     }else{
       await userDocumentReference.update({
@@ -125,7 +125,7 @@ class DatabaseService{
       });
 
       await groupDocumentReference.update({
-        "groups": FieldValue.arrayUnion(["${uid}_$userName"])
+        "members": FieldValue.arrayUnion(["${uid}_$userName"])
       });
     }
   }
