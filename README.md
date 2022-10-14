@@ -11,7 +11,7 @@ specific group. Leave a group if you want to.
 <img align="left" alt="Coading" width ="400" src = "/screenshoots/register.jpg">
 <img align="right" alt="Coading" width ="400" src = "/screenshoots/login.jpg">
  </div>
-  </br>
+
  <div>
 <img align="left" alt="Coading" width ="400" src = "/screenshoots/homepage_empty.jpg">
 <img align="right" alt="Coading" width ="400" src = "/screenshoots/drawer.jpg">
@@ -19,7 +19,8 @@ specific group. Leave a group if you want to.
  </br>
  <div>
 <img align="left" alt="Coading" width ="400" src = "/screenshoots/create_group.jpg">
-<img align="right" alt="Coading" width ="400" src = "/screenshoots/search.jpg">
+<img align="center" alt="Coading" width ="400" src = "/screenshoots/search.jpg">
+ <img align="center" alt="Coading" width ="400" src = "/screenshoots/home_page.jpg">
   </div>
    </br>
   <div>
