@@ -1,16 +1,8 @@
-# chatapp_firebase
 
-A new Flutter project.
+Group Chat
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+It's a android mobile app build with flutter to chat with many peoples
+in a group. You can create group here or join a group to connect 
+with peoples. Discuss about anything with friends. Create account
+or signin with email and password. Search a group to find out a 
+specific group. Leave a group if you want to.
